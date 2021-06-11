@@ -48,6 +48,8 @@ I will use the following typeface, a subset of the 100 typeface introduced in th
   - Interstate
   - MVB Solano Gothic
 - Humanist Sans
+  - Gill Sans Nova (in lieu of Gill Sans)
+  - 
 
 ---
 
