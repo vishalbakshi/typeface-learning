@@ -1,0 +1,30 @@
+{
+  "name": "typeface-learning",
+  "version": "1.0.0",
+  "description": "A repo for a fastai typeface image classification model as part of Chapter 7 Further Research in the course",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vishalbakshi/typeface-learning.git"
+  },
+  "keywords": [
+    "javascript",
+    "python",
+    "deep",
+    "learning",
+    "typeface",
+    "fastai"
+  ],
+  "author": "vishalbakshi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vishalbakshi/typeface-learning/issues"
+  },
+  "homepage": "https://github.com/vishalbakshi/typeface-learning#readme",
+  "devDependencies": {
+    "jest": "^27.0.4"
+  }
+}
