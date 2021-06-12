@@ -38,7 +38,7 @@ Classes: 15
 - Inscribed/Engraved
   - Modesto
   - Trajan
-- Grotesque Sans
+- ~~Grotesque Sans~~
 - Neo-Grotesque Sans
   - Antique Olive
 - Gothic Sans
