@@ -15,6 +15,8 @@ Font is particular style, size and weight of typeface. If typeface is the class,
 
 I will use the following typeface, a subset of the 100 typeface introduced in the book, which I've selected only due to availability via my Adobe Fonts account. Initially, I've selected only the "Regular" or equivalent font although I may expand that in future efforts to improve the model.
 
+Classes: 15
+
 - Humanist Serif
   - Adobe Jenson
   - FF Scala
@@ -49,20 +51,32 @@ I will use the following typeface, a subset of the 100 typeface introduced in th
   - MVB Solano Gothic
 - Humanist Sans
   - Gill Sans Nova (in lieu of Gill Sans)
-  - 
-
+  - Myriad
+  - Cronos
+  - Auto
+- Neo-Humanist Sans
+  - FF Meta
+  - FF Dax
+- Grotesque Slab
+  - Clarendon Text (in lieu of Clarendon)
+- Geometric Slab
+  - Rockwell
+- Humanist Slab
+  - PMN Caecilia
+  - FF Unit Slab
+  - Adelle
+- Script
+  - Kinescope
+  - Bickham Script
+  - Tangier
+- Display
+  - Bree
+  - Rumba
+  - Trade Gothic Next (in lieu of Trade Gothic Bold Condensed No. 20)
+  - Cabazon
 ---
-
-I'll start by structuring the repo as follows:
-
-```
-- typeface-learning
-  - js
-    - files related to image dataset generation
-  - python
-    - files related to training the image classification model
-```
 
 ## Image Generation
 
+Text rendered onto HTML Canvas elements saved as PNGs.
 
