@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Typeface Image Generation</title>
+    
+    <meta name="author" content="Vishal Bakshi">
+    <meta name="description" content="Generate images of typeface classes">
+
+    <meta property="og:image" content="https://developer.cdn.mozilla.net/static/img/opengraph-logo.dc4e08e2f6af.png">
+    <meta property="og:description" content="Generate images of typeface classes">
+    <meta property="og:title" content="Typeface Image Generator">
+  </head>
+  <body>
+      <h1 id="h1">Typeface Image Generator</h1>
+      <h2 id="h2">Design the dataset</h2>
+      <form id="dataset-form">
+        <fieldset id="typeface-class-fieldset">
+          <legend id="typeface-class-fieldset-legend">Typeface Classes</legend>
+        </fieldset>
+        <fieldset id="font-fieldset">
+          <legend id="font-fieldset-legend">Fonts</legend>
+        </fieldset>
+      </form>
+  </body>
+  <script>
+    // DATA FOR FORM ATTRIBUTES
+    let typeface_classes = [
+      "Humanist Serif",
+      "Transitional Serif",
+      "Rational Serif",
+      "Contemporary Serif",
+      "Inscribed/Engraved",
+      "Neo-Grotesque Sans",
+      "Gothic Sans",
+      "Geometric Sans",
+      "Humanist Sans",
+      "Neo-Humanist Sans",
+      "Grotesque Slab",
+      "Geometric Slab",
+      "Humanist Slab",
+      "Script",
+      "Display"]
+
+    let fonts = {
+      "Humanist Serif": [
+        "Adobe Jenson",
+        "FF Scala",
+        "Minion",
+        "Garamond Premier",
+        "MVB Verdigris"
+        ], 
+      "Transitional Serif": [
+        "Adobe Caslon",
+        "Mrs Eaves",
+        "Plantin",
+        "Times New Roman",
+        "Le Monde Journal"
+      ],
+      "Rational Serif": [
+        "Filosofia",
+        "LTC Bodoni 175"
+      ],
+      "Contemporary Serif": [
+        "Skolar",
+        "FF Meta Serif"
+      ],
+      "Inscribed/Engraved": [
+        "Modesto",
+        "Trajan"
+      ],
+      "Neo-Grotesque Sans": [
+        "Antique Olive"
+      ],
+      "Gothic Sans": [
+        "Bell Centennial",
+        "News Gothic"
+      ],
+      "Geometric Sans": [
+        "ITC Avant Garde Gothic",
+        "Din 2014",
+        "Interstate",
+        "MVB Solano Gothic"
+      ],
+      "Humanist Sans": [
+        "Gill Sans Nova",
+        "Myriad",
+        "Cronos",
+        "Auto"
+      ],
+      "Neo-Humanist Sans": [
+        "FF Meta",
+        "FF Dax"
+      ],
+      "Grotesque Slab": [
+        "Clarendon Text"
+      ],
+      "Geometric Slab": [
+        "Rockwell"
+      ],
+      "Humanist Slab": [
+        "PMN Caecilia",
+        "FF Unit Slab",
+        "Adelle"
+      ],
+      "Script": [
+        "Kinescope",
+        "Bickham Script",
+        "Tangier"
+      ],
+      "Display": [
+        "Bree",
+        "Rumba",
+        "Trade Gothic Next",
+        "Cabazon"
+      ]
+    }
+    // TYPEFACE CLASSES FIELDSET
+    // create typeface class labels and checkboxes
+    // insert them into the typeface class fieldset
+
+    // font checkbox visibility event handler for typeface class checkboxes
+    function show_fonts(e) {
+      let font_class = e.target.id + '-font'
+      let font_elements = document.getElementsByClassName(font_class)
+      for (let el of font_elements) {
+        el.hidden = e.target.checked ? false : true 
+      }
+    }
+
+    for (let typeface_class of typeface_classes) {
+      let value = typeface_class.toLowerCase().replace(' ', '-').replace('/', '-')
+
+      let label = document.createElement('label')
+      label.htmlFor = value
+      label.textContent = typeface_class
+
+      let input = document.createElement('input')
+      input.role = "checkbox"
+      input.type = "checkbox"
+      input.ariaChecked = "false"
+      input.name = value
+      input.id = value
+      input.value = value
+      input.className = "classes"
+      input.addEventListener('change', show_fonts)
+
+      document.getElementById('typeface-class-fieldset').insertAdjacentElement('beforeend', label)
+
+      document.getElementById('typeface-class-fieldset').insertAdjacentElement('beforeend', input)
+    }
+
+    // FONT FIELDSET
+    // create typeface heading, font labels and font checkboxes
+    for (let typeface in fonts){
+      let typeface_value = typeface.toLowerCase().replace(' ', '-').replace('/', '-')
+      let class_name = typeface_value + '-font'
+      let typeface_heading = document.createElement('h3')
+      typeface_heading.hidden = true
+      typeface_heading.className = class_name
+      typeface_heading.textContent = typeface
+      document.getElementById('font-fieldset').insertAdjacentElement('beforeend', typeface_heading)
+
+      for (let font of fonts[typeface]) {
+        let value = font.toLowerCase().replace(' ', '-').replace('/', '-')
+        let label = document.createElement('label')
+        label.hidden = true
+        label.htmlFor = value
+        label.textContent = font
+        label.className = class_name
+        
+        let input = document.createElement('input')
+        input.hidden = true
+        input.role = "checkbox"
+        input.type = "checkbox"
+        input.ariaChecked = "false"
+        input.name = value
+        input.id = value
+        input.value = value
+        input.className = class_name
+
+        document.getElementById('font-fieldset').insertAdjacentElement('beforeend', label)
+        document.getElementById('font-fieldset').insertAdjacentElement('beforeend', input)
+      }
+
+    }
+  </script>
+</html>

@@ -1,0 +1,3 @@
+module.exports.class_text = 'Humanist Serif,Transitional Serif,Rational Serif,Contemporary Serif,Inscribed/Engraved,Neo-Groteseque Sans,Gothic Sans,Geometric Sans,Humanist Sans,Neo-Humanist Sans,Grotesque Slab,Geometric Slab,Humanist Slab,Script,Display';
+
+module.exports.class_values = 'humanist-serif,transitional-serif,rational-serif,contemporary-serif,inscribed-engraved,neo-groteseque-sans,gothic-sans,geometric-sans,humanist-sans,neo-humanist-sans,grotesque-slab,geometric-slab,humanist-slab,script,display';

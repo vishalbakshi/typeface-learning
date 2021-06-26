@@ -1,0 +1,1 @@
+humanist-serif,transitional-serif,rational-serif,contemporary-serif,inscribed-engraved,neo-groteseque-sans,gothic-sans,geometric-sans,humanist-sans,neo-humanist-sans,grotesque-slab,geometric-slab,humanist-slab,script,display
