@@ -16,10 +16,16 @@
       <h2 id="h2">Design the dataset</h2>
       <form id="dataset-form">
         <fieldset id="typeface-class-fieldset">
-          <legend id="typeface-class-fieldset-legend">Typeface Classes</legend>
+          <legend id="typeface-class-fieldset-legend">Select Typeface Classes</legend>
         </fieldset>
         <fieldset id="font-fieldset">
-          <legend id="font-fieldset-legend">Fonts</legend>
+          <legend id="font-fieldset-legend">Select Fonts</legend>
+        </fieldset>
+        <fieldset id="image-settings-fieldset">
+          <legend id="image-settings-fieldset-legend">Set Image Settings</legend>
+        </fieldset>
+        <fieldset id="word-list-fieldset">
+          <legend id="word-list-fieldset-legend">Provide a Word List</legend>
         </fieldset>
       </form>
   </body>
@@ -115,13 +121,24 @@
         "Cabazon"
       ]
     }
+
+    let image_settings = [
+      {'text': 'Number of Images per Class', 'value': 'images-per-class'},
+      {'text': 'Image Height (px)', 'value': 'image-height'},
+      {'text': 'Image Width (px)', 'value': 'image-width'}
+    ]
+
+    let word_list = [
+      {'text': 'Word List File Upload', 'value': 'word-list-file-upload', 'type': 'file'},
+      {'text': 'Word List Textbox', 'value': 'word-list-textbox', 'type': 'textarea'}
+    ]
     // TYPEFACE CLASSES FIELDSET
     // create typeface class labels and checkboxes
     // insert them into the typeface class fieldset
 
     // font checkbox visibility event handler for typeface class checkboxes
     function show_fonts(e) {
-      let font_class = e.target.id + '-font'
+      let font_class = e.target.id
       let font_elements = document.getElementsByClassName(font_class)
       for (let el of font_elements) {
         el.hidden = e.target.checked ? false : true 
@@ -152,9 +169,21 @@
 
     // FONT FIELDSET
     // create typeface heading, font labels and font checkboxes
+    function show_image_settings(e) {
+      // display image settings element if any font checkbox is checked
+      let image_settings_elements = document.getElementsByClassName('image-settings')
+      let font_elements = document.getElementsByClassName('font')
+      let font_checked = false
+      for (let el of font_elements) {
+        if (el.checked) { font_checked = true }
+      }
+      for (let el of image_settings_elements) {
+        el.hidden = !font_checked
+      }
+    }
     for (let typeface in fonts){
       let typeface_value = typeface.toLowerCase().replace(' ', '-').replace('/', '-')
-      let class_name = typeface_value + '-font'
+      let class_name = typeface_value
       let typeface_heading = document.createElement('h3')
       typeface_heading.hidden = true
       typeface_heading.className = class_name
@@ -167,7 +196,7 @@
         label.hidden = true
         label.htmlFor = value
         label.textContent = font
-        label.className = class_name
+        label.classList.add(class_name, 'font')
         
         let input = document.createElement('input')
         input.hidden = true
@@ -177,12 +206,69 @@
         input.name = value
         input.id = value
         input.value = value
-        input.className = class_name
+        input.classList.add(class_name, 'font')
+        input.addEventListener('change', show_image_settings)
 
         document.getElementById('font-fieldset').insertAdjacentElement('beforeend', label)
         document.getElementById('font-fieldset').insertAdjacentElement('beforeend', input)
       }
 
     }
+
+    // IMAGE SETTINGS FIELDSET
+    function show_word_list(e) {
+      let image_setting_elements = document.getElementsByClassName('image-settings')
+      let word_list_elements = document.getElementsByClassName('word-list')
+      let show_word_list = false
+      for (let el of image_setting_elements) {
+        show_word_list = el.value == "" ? true : false
+      }
+
+      for (let el of word_list_elements) {
+        el.hidden = show_word_list
+      }
+
+    }
+    for (let el of image_settings) {
+      let label = document.createElement('label')
+      label.hidden = true
+      label.htmlFor = el['value']
+      label.textContent = el['text']
+      label.className = 'image-settings'
+
+      let input = document.createElement('input')
+      input.hidden = true
+      input.type = 'number'
+      input.min = 10
+      input.name = el['value']
+      input.id = el['value']
+      input.className = 'image-settings'
+      input.addEventListener('change', show_word_list)
+
+      document.getElementById('image-settings-fieldset').insertAdjacentElement('beforeend', label)
+      document.getElementById('image-settings-fieldset').insertAdjacentElement('beforeend', input)
+    }
+    
+    // WORD LIST FIELDSET
+    for (let el of word_list) {
+      let label = document.createElement('label')
+      label.hidden = true
+      label.htmlFor = el['value']
+      label.textContent = el['text']
+      label.className = 'word-list'
+
+      let input = document.createElement('input')
+      input.hidden = true
+      input.type = el['type']
+      input.name = el['value']
+      input.id = el['value']
+      input.className = 'word-list'
+
+      document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', label)
+      document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', input)
+    }
+    
+
+
   </script>
 </html>

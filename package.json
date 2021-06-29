@@ -27,16 +27,17 @@
   },
   "homepage": "https://github.com/vishalbakshi/typeface-learning#readme",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
     "@testing-library/dom": "^8.0.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/user-event": "^13.1.9",
     "a11y": "^0.5.1",
+    "babel-jest": "^25.3.0",
     "cypress": "^7.5.0",
     "jest": "^27.0.4",
     "jsdom": "^16.6.0",
     "nodemon": "^2.0.7",
-    "pa11y": "^6.0.0",
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "@testing-library/jest-dom": "^5.5.0",
-    "babel-jest": "^25.3.0"
+    "pa11y": "^6.0.0"
   }
 }
