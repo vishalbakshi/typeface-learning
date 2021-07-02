@@ -128,10 +128,6 @@
       {'text': 'Image Width (px)', 'value': 'image-width'}
     ]
 
-    let word_list = [
-      {'text': 'Word List File Upload', 'value': 'word-list-file-upload', 'type': 'file'},
-      {'text': 'Word List Textbox', 'value': 'word-list-textbox', 'type': 'textarea'}
-    ]
     // TYPEFACE CLASSES FIELDSET
     // create typeface class labels and checkboxes
     // insert them into the typeface class fieldset
@@ -243,31 +239,43 @@
       input.name = el['value']
       input.id = el['value']
       input.className = 'image-settings'
-      input.addEventListener('change', show_word_list)
+      input.addEventListener('input', show_word_list)
 
       document.getElementById('image-settings-fieldset').insertAdjacentElement('beforeend', label)
       document.getElementById('image-settings-fieldset').insertAdjacentElement('beforeend', input)
     }
     
     // WORD LIST FIELDSET
-    for (let el of word_list) {
-      let label = document.createElement('label')
-      label.hidden = true
-      label.htmlFor = el['value']
-      label.textContent = el['text']
-      label.className = 'word-list'
+    let label = document.createElement('label')
+    label.hidden = true
+    label.htmlFor = 'word-list-file-upload'
+    label.textContent = 'Word List File Upload'
+    label.className = 'word-list'
 
-      let input = document.createElement('input')
-      input.hidden = true
-      input.type = el['type']
-      input.name = el['value']
-      input.id = el['value']
-      input.className = 'word-list'
+    let input = document.createElement('input')
+    input.hidden = true
+    input.type = 'file'
+    input.name = 'word-list-file-upload'
+    input.id = 'word-list-file-upload'
+    input.className = 'word-list'
 
-      document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', label)
-      document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', input)
-    }
-    
+    document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', label)
+    document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', input)
+
+    label = document.createElement('label')
+    label.hidden = true
+    label.htmlFor = 'word-list-textbox'
+    label.textContent = 'Word List Textbox'
+    label.className = 'word-list'
+
+    textarea = document.createElement('textarea')
+    textarea.hidden = true
+    textarea.name = 'word-list-textbox'
+    textarea.id = 'word-list-textbox'
+    textarea.className = 'word-list'
+
+    document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', label)
+    document.getElementById('word-list-fieldset').insertAdjacentElement('beforeend', textarea)
 
 
   </script>

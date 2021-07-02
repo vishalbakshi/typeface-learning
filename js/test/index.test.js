@@ -1,4 +1,4 @@
-import { fireEvent, getByLabelText, getByText } from '@testing-library/dom'
+import { fireEvent, getAllByRole, getByLabelText, getByText } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
 import { toBeVisible } from '@testing-library/jest-dom'
@@ -9,6 +9,9 @@ const html = fs.readFileSync(path.resolve(__dirname, './../index.html'), 'utf8')
 const words = fs.readFileSync(path.resolve(__dirname, './words.txt'), 'utf-8')
 let dom
 let container
+let typeface_classes
+let fonts
+let font_list
 
 describe('index.html', () => {
     beforeEach(() => {
@@ -18,626 +21,213 @@ describe('index.html', () => {
       // https://github.com/jsdom/jsdom#executing-scripts
       dom = new JSDOM(html, { runScripts: 'dangerously' })
       container = dom.window.document.body
+      typeface_classes = [
+        "Humanist Serif",
+        "Transitional Serif",
+        "Rational Serif",
+        "Contemporary Serif",
+        "Inscribed/Engraved",
+        "Neo-Grotesque Sans",
+        "Gothic Sans",
+        "Geometric Sans",
+        "Humanist Sans",
+        "Neo-Humanist Sans",
+        "Grotesque Slab",
+        "Geometric Slab",
+        "Humanist Slab",
+        "Script",
+        "Display"]
+      fonts = {
+          "Humanist Serif": [
+            "Adobe Jenson",
+            "FF Scala",
+            "Minion",
+            "Garamond Premier",
+            "MVB Verdigris"
+            ], 
+          "Transitional Serif": [
+            "Adobe Caslon",
+            "Mrs Eaves",
+            "Plantin",
+            "Times New Roman",
+            "Le Monde Journal"
+          ],
+          "Rational Serif": [
+            "Filosofia",
+            "LTC Bodoni 175"
+          ],
+          "Contemporary Serif": [
+            "Skolar",
+            "FF Meta Serif"
+          ],
+          "Inscribed/Engraved": [
+            "Modesto",
+            "Trajan"
+          ],
+          "Neo-Grotesque Sans": [
+            "Antique Olive"
+          ],
+          "Gothic Sans": [
+            "Bell Centennial",
+            "News Gothic"
+          ],
+          "Geometric Sans": [
+            "ITC Avant Garde Gothic",
+            "Din 2014",
+            "Interstate",
+            "MVB Solano Gothic"
+          ],
+          "Humanist Sans": [
+            "Gill Sans Nova",
+            "Myriad",
+            "Cronos",
+            "Auto"
+          ],
+          "Neo-Humanist Sans": [
+            "FF Meta",
+            "FF Dax"
+          ],
+          "Grotesque Slab": [
+            "Clarendon Text"
+          ],
+          "Geometric Slab": [
+            "Rockwell"
+          ],
+          "Humanist Slab": [
+            "PMN Caecilia",
+            "FF Unit Slab",
+            "Adelle"
+          ],
+          "Script": [
+            "Kinescope",
+            "Bickham Script",
+            "Tangier"
+          ],
+          "Display": [
+            "Bree",
+            "Rumba",
+            "Trade Gothic Next",
+            "Cabazon"
+          ]
+        }
+        font_list = [
+          "Adobe Jenson",
+          "FF Scala",
+          "Minion",
+          "Garamond Premier",
+          "MVB Verdigris",
+          "Adobe Caslon",
+          "Mrs Eaves",
+          "Plantin",
+          "Times New Roman",
+          "Le Monde Journal",
+          "Filosofia",
+          "LTC Bodoni 175",
+          "Skolar",
+          "FF Meta Serif",
+          "Modesto",
+          "Trajan",
+          "Antique Olive",
+          "Bell Centennial",
+          "News Gothic",
+          "ITC Avant Garde Gothic",
+          "Din 2014",
+          "Interstate",
+          "MVB Solano Gothic",
+          "Gill Sans Nova",
+          "Myriad",
+          "Cronos",
+          "Auto",
+          "FF Meta",
+          "FF Dax",
+          "Clarendon Text",
+          "Rockwell",
+          "PMN Caecilia",
+          "FF Unit Slab",
+          "Adelle",
+          "Kinescope",
+          "Bickham Script",
+          "Tangier",
+          "Bree",
+          "Rumba",
+          "Trade Gothic Next",
+          "Cabazon"]
     })
   
     it('renders an h1 element with expected text', () => {
       expect(container.querySelector('h1')).not.toBeNull()
       expect(container.querySelector('h1').textContent).toBe('Typeface Image Generator')
     })
-  
-    it('renders typeface class checkboxes', () =>{
-        expect(getByLabelText(container, 'Humanist Serif', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Transitional Serif', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Rational Serif', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Contemporary Serif', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Inscribed/Engraved', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Neo-Grotesque Sans', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Gothic Sans', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Geometric Sans', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Humanist Sans', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Neo-Humanist Sans', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Grotesque Slab', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Geometric Slab', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Humanist Slab', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Script', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Display', {selector: 'input'})).not.toBeNull()
+
+    it('renders typeface class checkboxes', () => {
+      for (let typeface of typeface_classes) {
+        expect(getByLabelText(container, typeface, {selector: 'input'})).not.toBeNull();
+      }
     })
 
-    it('renders font checkboxes corresponding to Humanist Serif upon checkbox click', () =>{
-        userEvent.click(getByLabelText(container, 'Humanist Serif', {selector: 'input'}))
-        expect(getByLabelText(container, 'Adobe Jenson', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'FF Scala', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Minion', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'Garamond Premier', {selector: 'input'})).not.toBeNull()
-        expect(getByLabelText(container, 'MVB Verdigris', {selector: 'input'})).not.toBeNull()
+    it('renders font checkboxes upon typeface class checkbox click', () => {
+      for (let typeface in fonts) {
+        userEvent.click(getByLabelText(container, typeface, {selector: 'input'}))
+        for (let font of fonts[typeface]) {
+          expect(getByLabelText(container, font, {selector: 'input'})).not.toBeNull()
+        }
+      }
     })
 
-    it('renders font checkboxes corresponding to Transitional Serif upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Transitional Serif', {selector: 'input'}))
-      expect(getByLabelText(container, 'Adobe Caslon', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Mrs Eaves', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Plantin', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Times New Roman', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Le Monde Journal', {selector: 'input'})).not.toBeNull()
-    })
+    it('sets image settings element hidden attribute to false if single font checkbox is checked and true if unchecked', () => {
+      for (let font of font_list) {
+        // click a font checkbox -> image setting elements should not be hidden
+        userEvent.click(getByLabelText(container, font, {selector: 'input'}))
+        expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
+        expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
+        expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
 
-    it('renders font checkboxes corresponding to Rational Serif upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Rational Serif', {selector: 'input'}))
-      expect(getByLabelText(container, 'Filosofia', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'LTC Bodoni 175', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Contemporary Serif upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Contemporary Serif', {selector: 'input'}))
-      expect(getByLabelText(container, 'Skolar', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'FF Meta Serif', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Inscribed/Engraved upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Inscribed/Engraved', {selector: 'input'}))
-      expect(getByLabelText(container, 'Modesto', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Trajan', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Neo-Grotesque Sans upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Neo-Grotesque Sans', {selector: 'input'}))
-      expect(getByLabelText(container, 'Antique Olive', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Gothic Sans upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Gothic Sans', {selector: 'input'}))
-      expect(getByLabelText(container, 'Bell Centennial', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'News Gothic', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Geometric Sans upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Geometric Sans', {selector: 'input'}))
-      expect(getByLabelText(container, 'ITC Avant Garde Gothic', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Din 2014', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Interstate', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'MVB Solano Gothic', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Humanist Sans upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Humanist Sans', {selector: 'input'}))
-      expect(getByLabelText(container, 'Gill Sans Nova', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Myriad', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Cronos', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Auto', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Neo-Humanist Sans upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Neo-Humanist Sans', {selector: 'input'}))
-      expect(getByLabelText(container, 'FF Meta', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'FF Dax', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Grotesque Slab upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Grotesque Slab', {selector: 'input'}))
-      expect(getByLabelText(container, 'Clarendon Text', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Geometric Slab upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Geometric Slab', {selector: 'input'}))
-      expect(getByLabelText(container, 'Rockwell', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Humanist Slab upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Humanist Slab', {selector: 'input'}))
-      expect(getByLabelText(container, 'PMN Caecilia', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'FF Unit Slab', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Adelle', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Script upon checkbox click', () =>{
-      userEvent.click(getByLabelText(container, 'Script', {selector: 'input'}))
-      expect(getByLabelText(container, 'Kinescope', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Bickham Script', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Tangier', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('renders font checkboxes corresponding to Display upon checkbox click', () => {
-      userEvent.click(getByLabelText(container, 'Display', {selector: 'input'}))
-      expect(getByLabelText(container, 'Bree', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Rumba', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Trade Gothic Next', {selector: 'input'})).not.toBeNull()
-      expect(getByLabelText(container, 'Cabazon', {selector: 'input'})).not.toBeNull()
-    })
-
-    it('sets image settings element hidden attribute to false if single font checkbox is checked, true if unchecked', () => {
-      // click a font checkbox -> image setting elements should not be hidden
-      userEvent.click(getByLabelText(container, 'Adobe Jenson', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-
-      // click the font checkbox again -> image setting elements should be hidden
-      userEvent.click(getByLabelText(container, 'Adobe Jenson', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'FF Scala', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'FF Scala', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Minion', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Minion', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Garamond Premier', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Garamond Premier', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'MVB Verdigris', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'MVB Verdigris', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Adobe Caslon', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Adobe Caslon', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Mrs Eaves', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Mrs Eaves', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Plantin', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Plantin', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Times New Roman', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Times New Roman', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Le Monde Journal', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Le Monde Journal', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Filosofia', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Filosofia', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'LTC Bodoni 175', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'LTC Bodoni 175', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Skolar', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Skolar', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'FF Meta Serif', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'FF Meta Serif', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Modesto', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Modesto', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Trajan', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Trajan', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Antique Olive', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Antique Olive', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Bell Centennial', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Bell Centennial', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'News Gothic', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'News Gothic', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'ITC Avant Garde Gothic', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'ITC Avant Garde Gothic', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Din 2014', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Din 2014', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Interstate', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Interstate', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'MVB Solano Gothic', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'MVB Solano Gothic', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Gill Sans Nova', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Gill Sans Nova', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Myriad', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Myriad', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Cronos', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Cronos', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Auto', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Auto', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'FF Meta', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'FF Meta', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'FF Dax', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'FF Dax', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Clarendon Text', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Clarendon Text', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Rockwell', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Rockwell', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'PMN Caecilia', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'PMN Caecilia', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'FF Unit Slab', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'FF Unit Slab', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Adelle', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Adelle', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Kinescope', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Kinescope', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Bickham Script', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Bickham Script', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Tangier', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Tangier', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Bree', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Bree', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Rumba', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Rumba', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Trade Gothic Next', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Trade Gothic Next', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
-
-      userEvent.click(getByLabelText(container, 'Cabazon', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
-      userEvent.click(getByLabelText(container, 'Cabazon', {selector: 'input'}))
-      expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
-      expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
+        // click the font checkbox again -> image setting elements should be hidden
+        userEvent.click(getByLabelText(container, font, {selector: 'input'}))
+        expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
+        expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
+        expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
+      }
     })
 
     it('sets image settings hidden attribute to false if all font checkboxes are checked and true if they are unchecked', () => {
-      userEvent.click(getByLabelText(container, 'Adobe Jenson', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Scala', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Minion', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Garamond Premier', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'MVB Verdigris', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Adobe Caslon', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Mrs Eaves', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Plantin', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Times New Roman', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Le Monde Journal', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Filosofia', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'LTC Bodoni 175', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Skolar', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Meta Serif', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Modesto', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Trajan', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Antique Olive', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Bell Centennial', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'News Gothic', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'ITC Avant Garde Gothic', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Din 2014', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Interstate', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'MVB Solano Gothic', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Gill Sans Nova', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Myriad', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Cronos', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Auto', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Meta', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Dax', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Clarendon Text', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Rockwell', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'PMN Caecilia', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Unit Slab', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Adelle', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Kinescope', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Bickham Script', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Tangier', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Bree', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Rumba', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Trade Gothic Next', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Cabazon', {selector: 'input'}))
+      // click all font checkboxes
+      for (let font of font_list) {
+        userEvent.click(getByLabelText(container, font, {selector: 'input'}))
+      }
       expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toBeVisible()
       expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toBeVisible()
       expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toBeVisible()
 
-      userEvent.click(getByLabelText(container, 'Adobe Jenson', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Scala', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Minion', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Garamond Premier', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'MVB Verdigris', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Adobe Caslon', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Mrs Eaves', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Plantin', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Times New Roman', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Le Monde Journal', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Filosofia', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'LTC Bodoni 175', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Skolar', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Meta Serif', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Modesto', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Trajan', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Antique Olive', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Bell Centennial', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'News Gothic', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'ITC Avant Garde Gothic', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Din 2014', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Interstate', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'MVB Solano Gothic', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Gill Sans Nova', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Myriad', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Cronos', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Auto', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Meta', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Dax', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Clarendon Text', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Rockwell', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'PMN Caecilia', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'FF Unit Slab', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Adelle', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Kinescope', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Bickham Script', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Tangier', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Bree', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Rumba', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Trade Gothic Next', {selector: 'input'}))
-      userEvent.click(getByLabelText(container, 'Cabazon', {selector: 'input'}))
+      // un-click all font checkboxes
+      for (let font of font_list) {
+        userEvent.click(getByLabelText(container, font, {selector: 'input'}))
+      }
       expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).not.toBeVisible()
       expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).not.toBeVisible()
       expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).not.toBeVisible()
     })
 
     it('makes visible the word list input elements once all three image settings elements are populated ', () => {
-      fireEvent.change(getByLabelText(container, 'Number of Images per Class', {selector: 'input'}), { target: { value: '20' } })
-      fireEvent.change(getByLabelText(container, 'Image Height (px)', {selector: 'input'}), { target: { value: '224' } })
-      fireEvent.change(getByLabelText(container, 'Image Width (px)', {selector: 'input'}), { target: { value: '224' } })
+      userEvent.type(getByLabelText(container, 'Number of Images per Class', {selector: 'input'}), '20')
+      userEvent.type(getByLabelText(container, 'Image Height (px)', {selector: 'input'}),'224')
+      userEvent.type(getByLabelText(container, 'Image Width (px)', {selector: 'input'}), '224')
       expect(getByLabelText(container, 'Number of Images per Class', {selector: 'input'})).toHaveValue(20)
       expect(getByLabelText(container, 'Image Height (px)', {selector: 'input'})).toHaveValue(224)
       expect(getByLabelText(container, 'Image Width (px)', {selector: 'input'})).toHaveValue(224)
       expect(getByLabelText(container, 'Word List File Upload', {selector: 'input'})).toBeVisible()
-      expect(getByLabelText(container, 'Word List Textbox', {selector: 'input'})).toBeVisible()
+      expect(getByLabelText(container, 'Word List Textbox', {selector: 'textarea'})).toBeVisible()
     })
-    // it('renders a button element', () => {
-    //   expect(container.querySelector('button')).not.toBeNull()
-    //   expect(getByText(container, 'Click me for a terrible pun')).toBeInTheDocument()
-    // })
-  
-    // it('renders a new paragraph via JavaScript when the button is clicked', async () => {
-    //   const button = getByText(container, 'Click me for a terrible pun')
-      
-    //   userEvent.click(button)
-    //   let generatedParagraphs = container.querySelectorAll('#pun-container p')
-    //   expect(generatedParagraphs.length).toBe(1)
-  
-    //   userEvent.click(button)
-    //   generatedParagraphs = container.querySelectorAll('#pun-container p')
-    //   expect(generatedParagraphs.length).toBe(2)
-  
-    //   userEvent.click(button)
-    //   generatedParagraphs = container.querySelectorAll('#pun-container p')
-    //   expect(generatedParagraphs.length).toBe(3)
-    // })
+   
+    it('receives expected word list via textbox', () => {
+      let expected_value = 'word\nlist\ntextbox'
+      userEvent.type(getByLabelText(container, 'Word List Textbox', {selector: 'textarea'}), expected_value)
+      expect(getByLabelText(container, 'Word List Textbox', {selector: 'textarea'}).value).toEqual(expected_value)
+    })
+
+    it('receives expected word list via file upload', () => {
+      let input = getByLabelText(container, 'Word List File Upload', {selector: 'input'})
+      userEvent.upload(input, words)
+      expect(input.files[0]).toStrictEqual(words)
+    })
   })
